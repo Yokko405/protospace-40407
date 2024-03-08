@@ -2,10 +2,14 @@ class CommentsController < ApplicationController
 
   def create
     @comment = Comment.new(comment_params)
+    @prototype = Prototype.find(params[:prototype_id])
+    @comments = @prototype.comments
+
     if @comment.save
       redirect_to prototype_path(@comment.prototype_id)
     else
-      render :new
+      #保存できないときは、今の画面に留まる
+      render 'prototypes/show', locals: { prototype: @prototype, comments: @comments }, status: :unprocessable_entity
     end
   end
 
